@@ -8,6 +8,14 @@ import { TailwindIndicator } from '@/components/tailwind-indicator'
 import { Providers } from '@/components/providers'
 import { Header } from '@/components/header'
 
+import { currentPageState } from 'nrstate/PageStateServer'
+import PageStateProvider from 'nrstate-client/PageStateProvider'
+import {
+  PageStateChat,
+  initialPageStateChat,
+  pathChat
+} from '@/app/PageStateChat'
+
 export const metadata = {
   metadataBase: new URL(`https://${process.env.VERCEL_URL}`),
   title: {
@@ -35,6 +43,9 @@ interface RootLayoutProps {
 
 export default function RootLayout({ children }: RootLayoutProps) {
   return (
+    <PageStateProvider
+      current={currentPageState<PageStateChat>(initialPageStateChat, pathChat)}
+    >
     <html lang="en" suppressHydrationWarning>
       <body
         className={cn(
@@ -58,5 +69,6 @@ export default function RootLayout({ children }: RootLayoutProps) {
         </Providers>
       </body>
     </html>
+    </PageStateProvider>
   )
 }

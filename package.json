@@ -57,6 +57,8 @@
     "eslint-config-next": "14.1.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-tailwindcss": "^3.14.0",
+    "nrstate": "^1.0.2",
+    "nrstate-client": "^1.0.2",
     "postcss": "^8.4.33",
     "prettier": "^3.2.4",
     "tailwind-merge": "^2.2.0",

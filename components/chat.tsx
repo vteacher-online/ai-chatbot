@@ -22,6 +22,9 @@ import { Input } from './ui/input'
 import { toast } from 'react-hot-toast'
 import { usePathname, useRouter } from 'next/navigation'
 
+import { usePageState } from 'nrstate-client/PageStateClient'
+import { PageStateChat, pathChat } from '@/app/PageStateChat'
+
 const IS_PREVIEW = process.env.VERCEL_ENV === 'preview'
 export interface ChatProps extends React.ComponentProps<'div'> {
   initialMessages?: Message[]
@@ -29,6 +32,9 @@ export interface ChatProps extends React.ComponentProps<'div'> {
 }
 
 export function Chat({ id, initialMessages, className }: ChatProps) {
+  const [pageState] = usePageState<PageStateChat>()
+  const { message } = pageState
+
   const router = useRouter()
   const path = usePathname()
   const [previewToken, setPreviewToken] = useLocalStorage<string | null>(
@@ -58,6 +64,9 @@ export function Chat({ id, initialMessages, className }: ChatProps) {
     })
   return (
     <>
+      <p className="text-sm text-blue-500">
+        ClientComponent(use client): message={message}
+      </p>
       <div className={cn('pb-[200px] pt-4 md:pt-10', className)}>
         {messages.length ? (
           <>

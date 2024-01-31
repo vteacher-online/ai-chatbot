@@ -12,6 +12,9 @@ import {
 import { IconArrowElbow, IconPlus } from '@/components/ui/icons'
 import { useRouter } from 'next/navigation'
 
+import { usePageState } from 'nrstate-client/PageStateClient'
+import { PageStateChat, pathChat } from '@/app/PageStateChat'
+
 export interface PromptProps
   extends Pick<UseChatHelpers, 'input' | 'setInput'> {
   onSubmit: (value: string) => void
@@ -24,6 +27,9 @@ export function PromptForm({
   setInput,
   isLoading
 }: PromptProps) {
+  const [pageState, setPageState] = usePageState<PageStateChat>()
+  const { message } = pageState
+
   const { formRef, onKeyDown } = useEnterSubmit()
   const inputRef = React.useRef<HTMLTextAreaElement>(null)
   const router = useRouter()
@@ -42,6 +48,14 @@ export function PromptForm({
         }
         setInput('')
         await onSubmit(input)
+
+        setPageState(
+          {
+            ...pageState,
+            message: input
+          },
+          pathChat
+        )
       }}
       ref={formRef}
     >
@@ -91,6 +105,9 @@ export function PromptForm({
             <TooltipContent>Send message</TooltipContent>
           </Tooltip>
         </div>
+        <p className="text-sm text-blue-500">
+          (Client)Component: message={message}
+        </p>
       </div>
     </form>
   )

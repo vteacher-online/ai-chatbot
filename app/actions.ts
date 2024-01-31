@@ -7,6 +7,13 @@ import { kv } from '@vercel/kv'
 import { auth } from '@/auth'
 import { type Chat } from '@/lib/types'
 
+import { getPageState } from 'nrstate/PageStateServer'
+import {
+  PageStateChat,
+  initialPageStateChat,
+  pathChat
+} from '@/app/PageStateChat'
+
 export async function getChats(userId?: string | null) {
   if (!userId) {
     return []
@@ -41,6 +48,10 @@ export async function getChat(id: string, userId: string) {
 }
 
 export async function removeChat({ id, path }: { id: string; path: string }) {
+  const pageState = getPageState<PageStateChat>(initialPageStateChat, pathChat)
+  const { message } = pageState
+  console.log('ServerActions(use server) message=', message)
+
   const session = await auth()
 
   if (!session) {
@@ -51,7 +62,7 @@ export async function removeChat({ id, path }: { id: string; path: string }) {
 
   const uid = await kv.hget<string>(`chat:${id}`, 'userId')
 
-  if (uid !== session?.user?.id) {
+  if (String(uid) !== session?.user?.id) {
     return {
       error: 'Unauthorized'
     }
